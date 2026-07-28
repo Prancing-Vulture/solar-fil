@@ -1,15 +1,12 @@
-# pyrefly: ignore [missing-import]
 import torch
-# pyrefly: ignore [missing-import]
 import torch.nn as nn
-# pyrefly: ignore [missing-import]
 import torch.nn.functional as F
 
 class DiceLoss(nn.Module):
     """
-    Soft Dice Loss operating directly on logits.
+    Soft Dice Loss operating directly on logits with laplace smoothing.
     """
-    def __init__(self, smooth=1e-6):
+    def __init__(self, smooth=1e-5):
         super(DiceLoss, self).__init__()
         self.smooth = smooth
 
@@ -24,14 +21,21 @@ class DiceLoss(nn.Module):
 
 class CustomCombinedLoss(nn.Module):
     """
-    Custom Loss combining BCEWithLogitsLoss (logits level) and Soft Dice Loss.
+    Custom Loss combining Pos-Weighted BCEWithLogitsLoss and Soft Dice Loss.
+    `pos_weight=5.0` heavily penalizes missing sparse solar filament pixels.
     """
-    def __init__(self, bce_weight=0.5, dice_weight=0.5, pos_weight=None):
+    def __init__(self, bce_weight=0.4, dice_weight=0.6, pos_weight_val=5.0):
         super(CustomCombinedLoss, self).__init__()
         self.bce_weight = bce_weight
         self.dice_weight = dice_weight
-        self.bce = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+        pos_weight_tensor = torch.tensor([pos_weight_val])
+        self.bce = nn.BCEWithLogitsLoss(pos_weight=pos_weight_tensor)
         self.dice = DiceLoss()
+
+    def to(self, device):
+        super().to(device)
+        self.bce.pos_weight = self.bce.pos_weight.to(device)
+        return self
 
     def forward(self, logits, targets):
         bce_loss = self.bce(logits, targets)
@@ -39,9 +43,9 @@ class CustomCombinedLoss(nn.Module):
         total_loss = (self.bce_weight * bce_loss) + (self.dice_weight * dice_loss)
         return total_loss, bce_loss, dice_loss
 
-def calculate_metrics(logits, targets, threshold=0.5, smooth=1e-6):
+def calculate_metrics(logits, targets, threshold=0.4, smooth=1e-5):
     """
-    Calculates Dice Score, IoU (Jaccard), Precision, and Recall given raw logits and targets.
+    Calculates Dice Score, IoU (Jaccard), Precision, and Recall at threshold 0.4.
     """
     with torch.no_grad():
         probs = torch.sigmoid(logits)
@@ -65,16 +69,3 @@ def calculate_metrics(logits, targets, threshold=0.5, smooth=1e-6):
         'precision': precision.item(),
         'recall': recall.item()
     }
-
-if __name__ == "__main__":
-    logits = torch.randn(4, 1, 256, 256)
-    targets = torch.randint(0, 2, (4, 1, 256, 256)).float()
-    
-    criterion = CustomCombinedLoss()
-    total_loss, bce, dice = criterion(logits, targets)
-    metrics = calculate_metrics(logits, targets)
-    
-    print(f"Custom Combined Loss: {total_loss.item():.4f}")
-    print(f"  -> BCE Logits Loss: {bce.item():.4f}")
-    print(f"  -> Dice Loss: {dice.item():.4f}")
-    print(f"Calculated Metrics: {metrics}")

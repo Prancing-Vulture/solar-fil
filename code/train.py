@@ -8,13 +8,13 @@ sys.path.append(os.path.dirname(__file__))
 
 from analysis import path as BASE_DATASET_PATH
 from dataset import get_dataloaders
-from model import SolarFilamentUNet
+from model import SolarFilamentAttentionUNet
 from loss_and_metrics import CustomCombinedLoss, calculate_metrics
 from displayer import LiveDisplayer
 
-def train_model(num_epochs=10, batch_size=8, lr=1e-3, img_size=(256, 256), save_dir="checkpoints"):
+def train_model(num_epochs=15, batch_size=4, lr=5e-4, img_size=(512, 512), save_dir="checkpoints"):
     print("=" * 75)
-    print("SOLAR FILAMENT SEGMENTATION - LIVE TRAINING & DISPLAYER PIPELINE")
+    print("SOLAR FILAMENT HIGH-RES ATTENTION UNET - TRAINING PIPELINE")
     print("=" * 75)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -38,26 +38,24 @@ def train_model(num_epochs=10, batch_size=8, lr=1e-3, img_size=(256, 256), save_
     print(f"Train Dataset: {len(train_loader.dataset)} images ({len(train_loader)} batches)")
     print(f"Validation Dataset: {len(val_loader.dataset)} images ({len(val_loader)} batches)")
     
-    model = SolarFilamentUNet(in_channels=1, out_channels=1, base_features=32).to(device)
-    criterion = CustomCombinedLoss(bce_weight=0.5, dice_weight=0.5).to(device)
+    model = SolarFilamentAttentionUNet(in_channels=1, out_channels=1, base_features=32).to(device)
+    criterion = CustomCombinedLoss(bce_weight=0.4, dice_weight=0.6, pos_weight_val=5.0).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epochs, eta_min=1e-6)
     
     os.makedirs(save_dir, exist_ok=True)
     best_model_path = os.path.join(save_dir, "best_model.pth")
 
-    # Launch Live Displayer Server
     displayer = LiveDisplayer(port=5000)
     print("Live Web Displayer active at: http://localhost:5000")
     print("Live Epoch Plot updated at:  live_display/live_epoch_display.png")
     
-    # Pick fixed validation sample for live epoch segmentation visualization
     fixed_val_img, fixed_val_mask, fixed_val_fname = val_loader.dataset[0]
     fixed_val_img_device = fixed_val_img.unsqueeze(0).to(device)
     
     best_val_dice = 0.0
 
-    print("\nStarting Training & Live Metric Logging...\n")
+    print("\nStarting High-Resolution Training & Live Metric Logging...\n")
     for epoch in range(1, num_epochs + 1):
         # TRAIN
         model.train()
@@ -77,7 +75,7 @@ def train_model(num_epochs=10, batch_size=8, lr=1e-3, img_size=(256, 256), save_
             optimizer.step()
             
             train_loss_sum += total_loss.item()
-            m = calculate_metrics(logits, masks)
+            m = calculate_metrics(logits, masks, threshold=0.4)
             train_dice_sum += m['dice']
             train_pbar.set_postfix({'loss': f"{total_loss.item():.4f}", 'dice': f"{m['dice']:.4f}"})
             
@@ -104,7 +102,7 @@ def train_model(num_epochs=10, batch_size=8, lr=1e-3, img_size=(256, 256), save_
                 val_loss_sum += total_loss.item()
                 val_bce_sum += bce_loss.item()
                 
-                m = calculate_metrics(logits, masks)
+                m = calculate_metrics(logits, masks, threshold=0.4)
                 val_dice_sum += m['dice']
                 val_iou_sum += m['iou']
                 val_pbar.set_postfix({'val_loss': f"{total_loss.item():.4f}", 'val_dice': f"{m['dice']:.4f}"})
@@ -114,7 +112,6 @@ def train_model(num_epochs=10, batch_size=8, lr=1e-3, img_size=(256, 256), save_
         avg_val_dice = val_dice_sum / len(val_loader)
         avg_val_iou = val_iou_sum / len(val_loader)
 
-        # LIVE PREDICTION FOR DISPLAYER
         with torch.no_grad():
             sample_logits = model(fixed_val_img_device)
             sample_probs = torch.sigmoid(sample_logits).squeeze().cpu().numpy()
@@ -135,7 +132,6 @@ def train_model(num_epochs=10, batch_size=8, lr=1e-3, img_size=(256, 256), save_
             sample_pred_probs=sample_probs
         )
 
-        # Print ASCII Epoch Summary Box
         print("+" + "-" * 73 + "+")
         print(f"| EPOCH {epoch:02d}/{num_epochs:02d} METRICS REPORT                                              |")
         print("+" + "-" * 73 + "+")
@@ -165,4 +161,4 @@ def train_model(num_epochs=10, batch_size=8, lr=1e-3, img_size=(256, 256), save_
     print("=" * 75)
 
 if __name__ == "__main__":
-    train_model(num_epochs=10, batch_size=8, lr=1e-3)
+    train_model(num_epochs=15, batch_size=4, lr=5e-4, img_size=(512, 512))

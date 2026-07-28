@@ -1,0 +1,17 @@
+
+=== Training Session Started at 2026-07-28 18:42:31 ===
+[2026-07-28 18:43:35] Epoch 01 | Train Loss: 0.7296 | Val Loss: 0.6260 | Val BCE: 0.1312 | Train Dice: 0.2187 | Val Dice: 0.5113 | Val IoU: 0.3468 -> [BEST CHECKPOINT SAVED]
+[2026-07-28 18:44:40] Epoch 02 | Train Loss: 0.5125 | Val Loss: 0.3845 | Val BCE: 0.0522 | Train Dice: 0.4915 | Val Dice: 0.5522 | Val IoU: 0.3906 -> [BEST CHECKPOINT SAVED]
+[2026-07-28 18:45:45] Epoch 03 | Train Loss: 0.2679 | Val Loss: 0.2529 | Val BCE: 0.0473 | Train Dice: 0.6310 | Val Dice: 0.6378 | Val IoU: 0.4718 -> [BEST CHECKPOINT SAVED]
+[2026-07-28 18:46:53] Epoch 04 | Train Loss: 0.2326 | Val Loss: 0.2355 | Val BCE: 0.0423 | Train Dice: 0.6585 | Val Dice: 0.6507 | Val IoU: 0.4866 -> [BEST CHECKPOINT SAVED]
+[2026-07-28 18:47:58] Epoch 05 | Train Loss: 0.2318 | Val Loss: 0.2418 | Val BCE: 0.0472 | Train Dice: 0.6565 | Val Dice: 0.6397 | Val IoU: 0.4799
+[2026-07-28 18:49:05] Epoch 06 | Train Loss: 0.2193 | Val Loss: 0.2420 | Val BCE: 0.0473 | Train Dice: 0.6727 | Val Dice: 0.6383 | Val IoU: 0.4771
+[2026-07-28 18:50:10] Epoch 07 | Train Loss: 0.2194 | Val Loss: 0.2275 | Val BCE: 0.0462 | Train Dice: 0.6720 | Val Dice: 0.6605 | Val IoU: 0.4979 -> [BEST CHECKPOINT SAVED]
+[2026-07-28 18:51:16] Epoch 08 | Train Loss: 0.2146 | Val Loss: 0.2226 | Val BCE: 0.0361 | Train Dice: 0.6787 | Val Dice: 0.6633 | Val IoU: 0.5003 -> [BEST CHECKPOINT SAVED]
+[2026-07-28 18:52:20] Epoch 09 | Train Loss: 0.2116 | Val Loss: 0.2238 | Val BCE: 0.0394 | Train Dice: 0.6822 | Val Dice: 0.6627 | Val IoU: 0.5023
+[2026-07-28 18:53:25] Epoch 10 | Train Loss: 0.2088 | Val Loss: 0.2282 | Val BCE: 0.0446 | Train Dice: 0.6863 | Val Dice: 0.6575 | Val IoU: 0.4949
+[2026-07-28 18:54:30] Epoch 11 | Train Loss: 0.2064 | Val Loss: 0.2244 | Val BCE: 0.0400 | Train Dice: 0.6894 | Val Dice: 0.6601 | Val IoU: 0.5023
+[2026-07-28 18:55:34] Epoch 12 | Train Loss: 0.2045 | Val Loss: 0.2118 | Val BCE: 0.0364 | Train Dice: 0.6922 | Val Dice: 0.6804 | Val IoU: 0.5200 -> [BEST CHECKPOINT SAVED]
+[2026-07-28 18:56:39] Epoch 13 | Train Loss: 0.2025 | Val Loss: 0.2130 | Val BCE: 0.0379 | Train Dice: 0.6948 | Val Dice: 0.6779 | Val IoU: 0.5173
+[2026-07-28 18:57:44] Epoch 14 | Train Loss: 0.2029 | Val Loss: 0.2128 | Val BCE: 0.0366 | Train Dice: 0.6941 | Val Dice: 0.6770 | Val IoU: 0.5163
+[2026-07-28 18:58:49] Epoch 15 | Train Loss: 0.2003 | Val Loss: 0.2139 | Val BCE: 0.0380 | Train Dice: 0.6984 | Val Dice: 0.6773 | Val IoU: 0.5167
