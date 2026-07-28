@@ -2,3 +2,6 @@
 .pixi/*
 !.pixi/config.toml
 kaggleapi.txt
+*.pth
+*.zip
+__pycache__/
