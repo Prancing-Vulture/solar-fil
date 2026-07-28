@@ -1,0 +1,38 @@
+[workspace]
+authors = ["Harreeshnarain S <narainharreesh@gmail.com>"]
+channels = ["conda-forge"]
+name = "solarfil_base"
+platforms = [{ platform = "win-64", cuda = "12" }]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = "3.11.*"
+ipython = "*"
+jupyter_client = "*"
+matplotlib = "*"
+numpy = "*"
+pandas = "*"
+scikit-learn = "*"
+seaborn = "*"
+statsmodels = "*"
+setuptools = "<82"
+scipy = "*"
+sympy = "*"
+networkx = "*"
+pytorch-gpu = "*"
+torchvision = "*"
+ipykernel = ">=7.3.0,<8"
+kagglehub = ">=1.0.2,<2"
+tqdm = ">=4.70.0,<5"
+pillow = ">=12.3.0,<13"
+flask = ">=3.1.3,<4"
+pycocotools = ">=2.0.11,<3"
+opencv = ">=5.0.0,<6"
+
+[pypi-dependencies]
+filelock = "*"
+fsspec = "*"
+jinja2 = "*"
+markupsafe = "*"

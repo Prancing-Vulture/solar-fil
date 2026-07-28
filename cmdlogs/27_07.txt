@@ -1,0 +1,31 @@
+PS C:\Users\Harreesh\projects\solarfil> pixi shell                                 
+(solarfil_base) PS C:\Users\Harreesh\projects\solarfil> python data_access.py
+Enter your Kaggle API token (input will not be visible): 
+Kaggle credentials set.
+Kaggle credentials successfully validated.
+(solarfil_base) PS C:\Users\Harreesh\projects\solarfil> python data_access.py
+Traceback (most recent call last):
+  File "C:\Users\Harreesh\projects\solarfil\data_access.py", line 7, in <module>
+    path = kagglehub.competition_download("filament-segmentation-2026")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harreesh\projects\solarfil\.pixi\envs\default\Lib\site-packages\kagglehub\competition.py", line 30, in competition_download
+    path, _ = registry.competition_resolver(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harreesh\projects\solarfil\.pixi\envs\default\Lib\site-packages\kagglehub\registry.py", line 28, in __call__
+    return impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harreesh\projects\solarfil\.pixi\envs\default\Lib\site-packages\kagglehub\resolver.py", line 35, in __call__
+    path, version = self._resolve(
+                    ^^^^^^^^^^^^^^
+  File "C:\Users\Harreesh\projects\solarfil\.pixi\envs\default\Lib\site-packages\kagglehub\http_resolver.py", line 55, in _resolve
+    raise UnauthenticatedError()
+kagglehub.exceptions.UnauthenticatedError: User is not authenticated
+(solarfil_base) PS C:\Users\Harreesh\projects\solarfil> python data_access.py
+Enter your Kaggle API token (input will not be visible): 
+Kaggle credentials set.
+Kaggle credentials successfully validated.
+Downloading to C:\Users\Harreesh\.cache\kagglehub\competitions\filament-segmentation-2026.archive...
+100%|████████████████████████████████████████████████████████| 671M/671M [02:29<00:00, 4.71MB/s]
+Extracting files...
+Path to competition files: C:\Users\Harreesh\.cache\kagglehub\competitions\filament-segmentation-2026
+(solarfil_base) PS C:\Users\Harreesh\projects\solarfil> 
