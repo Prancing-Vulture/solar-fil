@@ -41,8 +41,12 @@ This repository provides a pretrained transfer learning architecture with U-Net,
 
 ### 3. Loss Formulation for Sparse Foreground Segmentation
 - **Loss Function** ([`code/loss_and_metrics.py`](file:///c:/Users/Harreesh/projects/solarfil/code/loss_and_metrics.py)):
-  $$\text{Loss}_{\text{total}} = 0.4 \cdot \text{BCEWithLogitsLoss}(\text{pos\_weight} = 5.0) + 0.6 \cdot \text{SoftDiceLoss}$$
-- **Pos-Weighting (`pos_weight = 5.0`)**: Gives $5\times$ higher gradient emphasis to foreground filament pixels during BCE calculation, overcoming severe class imbalance.
+
+  $$
+  \text{Loss}_{\text{total}} = 0.4 \cdot \text{BCEWithLogitsLoss}(\text{pos\_weight} = 5.0) + 0.6 \cdot \text{SoftDiceLoss}
+  $$
+
+- **Pos-Weighting (`pos_weight = 5.0`)**: Gives 5x higher gradient emphasis to foreground filament pixels during BCE calculation, overcoming severe class imbalance.
 - **Soft Dice Loss**: Directly optimizes Sørensen–Dice overlap coefficient on sigmoid probability maps.
 
 ### 4. Post-Processing & Data-Driven Noise Filtering
