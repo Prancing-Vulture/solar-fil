@@ -4,13 +4,14 @@ import torch
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
+import cv2
 
 sys.path.append(os.path.dirname(__file__))
 
 from analysis import path as BASE_DATASET_PATH
 from model import SolarFilamentUNet
 
-def run_inference(checkpoint_path="checkpoints/best_model.pth", num_samples=5, img_size=(256, 256), output_dir="inference_results"):
+def run_inference(checkpoint_path="checkpoints/best_model.pth", num_samples=5, img_size=(512, 512), output_dir="inference_results"):
     print("=" * 60)
     print("SOLAR FILAMENT INFERENCE & TEST EVALUATION")
     print("=" * 60)
@@ -54,7 +55,10 @@ def run_inference(checkpoint_path="checkpoints/best_model.pth", num_samples=5, i
             orig_size = pil_img.size
             
             pil_img_resized = pil_img.resize(img_size, Image.BILINEAR)
-            img_np = np.array(pil_img_resized, dtype=np.float32) / 255.0
+            img_np_uint8 = np.array(pil_img_resized, dtype=np.uint8)
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            img_np_clahe = clahe.apply(img_np_uint8)
+            img_np = img_np_clahe.astype(np.float32) / 255.0
             
             img_tensor = torch.from_numpy(img_np).unsqueeze(0).unsqueeze(0).to(device)
             

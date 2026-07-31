@@ -4,6 +4,9 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image, ImageDraw
+import cv2
+import albumentations as A
+
 
 class SolarFilamentDataset(Dataset):
     """
@@ -50,6 +53,18 @@ class SolarFilamentDataset(Dataset):
             if img_id not in self.img_to_anns:
                 self.img_to_anns[img_id] = []
             self.img_to_anns[img_id].append(ann)
+
+        if self.is_train:
+            self.transform = A.Compose([
+                A.HorizontalFlip(p=0.5),
+                A.VerticalFlip(p=0.5),
+                A.RandomRotate90(p=0.5),
+                A.ShiftScaleRotate(shift_limit=0.05, scale_limit=0.1, rotate_limit=15, p=0.5, border_mode=cv2.BORDER_CONSTANT),
+                A.RandomBrightnessContrast(brightness_limit=0.15, contrast_limit=0.15, p=0.5),
+                A.GaussNoise(p=0.2),
+            ])
+        else:
+            self.transform = None
             
     def __len__(self):
         return len(self.images)
@@ -76,25 +91,18 @@ class SolarFilamentDataset(Dataset):
         pil_img_resized = pil_img.resize(self.img_size, Image.BILINEAR)
         mask_resized = mask_pil.resize(self.img_size, Image.NEAREST)
         
-        img_np = np.array(pil_img_resized, dtype=np.float32) / 255.0
+        img_np_uint8 = np.array(pil_img_resized, dtype=np.uint8)
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        img_np_clahe = clahe.apply(img_np_uint8)
+        
+        img_np = img_np_clahe.astype(np.float32) / 255.0
         mask_np = np.array(mask_resized, dtype=np.float32)
         
-        # Data Augmentations during Training
-        if self.is_train:
-            # Random Horizontal Flip
-            if np.random.rand() > 0.5:
-                img_np = np.fliplr(img_np)
-                mask_np = np.fliplr(mask_np)
-            # Random Vertical Flip
-            if np.random.rand() > 0.5:
-                img_np = np.flipud(img_np)
-                mask_np = np.flipud(mask_np)
-            # Random 90-degree Rotation
-            if np.random.rand() > 0.5:
-                k = np.random.choice([1, 2, 3])
-                img_np = np.rot90(img_np, k=k)
-                mask_np = np.rot90(mask_np, k=k)
-                
+        if self.transform is not None:
+            augmented = self.transform(image=img_np, mask=mask_np)
+            img_np = augmented['image']
+            mask_np = augmented['mask']
+            
         img_tensor = torch.from_numpy(img_np.copy()).unsqueeze(0)
         mask_tensor = torch.from_numpy(mask_np.copy()).unsqueeze(0)
         

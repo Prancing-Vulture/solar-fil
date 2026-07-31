@@ -16,16 +16,17 @@ class LiveDisplayer:
     """
     def __init__(self, port=5000, save_dir="live_display", log_dir="logs"):
         self.port = port
-        self.save_dir = save_dir
-        self.log_dir = log_dir
+        root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.save_dir = os.path.abspath(os.path.join(root_dir, save_dir))
+        self.log_dir = os.path.abspath(os.path.join(root_dir, log_dir))
         
-        os.makedirs(save_dir, exist_ok=True)
-        os.makedirs(log_dir, exist_ok=True)
+        os.makedirs(self.save_dir, exist_ok=True)
+        os.makedirs(self.log_dir, exist_ok=True)
         
-        self.plot_path = os.path.join(save_dir, "live_epoch_display.png")
-        self.csv_log_path = os.path.join(log_dir, "training_metrics.csv")
-        self.txt_log_path = os.path.join(log_dir, "training.log")
-        self.json_log_path = os.path.join(log_dir, "training_metrics.json")
+        self.plot_path = os.path.join(self.save_dir, "live_epoch_display.png")
+        self.csv_log_path = os.path.join(self.log_dir, "training_metrics.csv")
+        self.txt_log_path = os.path.join(self.log_dir, "training.log")
+        self.json_log_path = os.path.join(self.log_dir, "training_metrics.json")
         
         # Initialize CSV header if file doesn't exist
         if not os.path.exists(self.csv_log_path):

@@ -1,0 +1,2 @@
+https://github.com/btgraham/SparseConvNet
+http://arxiv.org/abs/1412.6071

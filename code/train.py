@@ -12,9 +12,9 @@ from model import SolarFilamentAttentionUNet
 from loss_and_metrics import CustomCombinedLoss, calculate_metrics
 from displayer import LiveDisplayer
 
-def train_model(num_epochs=15, batch_size=4, lr=5e-4, img_size=(512, 512), save_dir="checkpoints"):
+def train_model(num_epochs=15, batch_size=4, lr=2e-4, img_size=(512, 512), save_dir="checkpoints"):
     print("=" * 75)
-    print("SOLAR FILAMENT HIGH-RES ATTENTION UNET - TRAINING PIPELINE")
+    print("SOLAR FILAMENT SEGMENTATION - TRANSFER LEARNING PRETRAINED MODEL")
     print("=" * 75)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

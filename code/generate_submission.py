@@ -29,7 +29,7 @@ def generate_submission(
     output_dir="submission_output",
     img_size=(512, 512),
     orig_size=(2048, 2048),
-    min_area_pixels=30,
+    min_area_pixels=300,
     prob_threshold=0.4
 ):
     print("=" * 75)
@@ -60,6 +60,8 @@ def generate_submission(
     
     submissions = []
 
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+
     print("\nGenerating Compressed COCO RLE Predictions for Test Images...")
     with torch.no_grad():
         for idx, fname in enumerate(test_files, 1):
@@ -69,7 +71,9 @@ def generate_submission(
             # Load and preprocess test image at 512x512
             pil_img = Image.open(img_path).convert('L')
             pil_img_resized = pil_img.resize(img_size, Image.BILINEAR)
-            img_np = np.array(pil_img_resized, dtype=np.float32) / 255.0
+            img_np_uint8 = np.array(pil_img_resized, dtype=np.uint8)
+            img_np_clahe = clahe.apply(img_np_uint8)
+            img_np = img_np_clahe.astype(np.float32) / 255.0
             
             img_tensor = torch.from_numpy(img_np).unsqueeze(0).unsqueeze(0).to(device)
             
