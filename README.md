@@ -40,7 +40,7 @@ This repository provides a pretrained transfer learning architecture with U-Net,
   - **Photometric Variation**: Random brightness, contrast scaling, and high-frequency Gaussian noise.
 
 ### 3. Loss Formulation for Sparse Foreground Segmentation
-- **Loss Function** ([`code/loss_and_metrics.py`](file:///c:/Users/Harreesh/projects/solarfil/code/loss_and_metrics.py)):
+-  **Loss Function** ([`code/loss_and_metrics.py`](file:///c:/Users/Harreesh/projects/solarfil/code/loss_and_metrics.py)):
 
   $$
   \text{Loss}_{\text{total}} = 0.4 \cdot \text{BCEWithLogitsLoss}(\text{pos\_weight} = 5.0) + 0.6 \cdot \text{SoftDiceLoss}
